@@ -1,85 +1,89 @@
 
-import queryString from 'query-string'
+import urlParse from 'url-parse'
 import React from 'react'
+import {observable,Action} from  'proxyo'
+import Rr from 'route-recognizer'
+
+
+var rr = new Rr();
+
+function isNotEmpty(obj) {
+  if (!obj){
+    return false
+  }
+  return Object.keys(obj).length !== 0;
+}
+
+
+function changeView (pathname,query){
+  console.log(pathname)
+  var res = rr.recognize(pathname);
+
+  this.currentView =  res ? res[0].handler : this.views.NotFound
+
+  this.currentView && this.currentView.onEnter && this.currentView.onEnter()
+  //todo Choose view based on http-hash parameters
+ /* var res =  Object.keys(this.views).filter((key)=>{
+    if (this.views[key].path === pathname){
+      return true
+    }
+  })
+  if (res){
+    console.log('view is changed to ',res , pathname)
+    this.currentView = this.views[res] || this.views.NotFound
+  }*/
+}
+
+function hookPopStateEventListener(){
+  window.addEventListener('popstate',(ev) => {
+    console.log('popstete event!')
+    this.goTo(window.location.pathname,urlParse.qs.parse(window.location.search),'silent')
+  });
+}
+
+function testHandler(){
+  console.log('test handler')
+}
 
 class RouterStore {
 
   constructor(views,startUrl) {
 
-    this.goTo.bind(this)
-    this.snapShotLocation = this.snapShotLocation.bind(this)
-    this.hookPopStateEventListener = this.hookPopStateEventListener.bind(this)
-    this.getCurrentView = this.getCurrentView.bind(this)
-    this.views = views;
-    this.currentPath = startUrl || '/'
-    this.currentView = this.getCurrentView(this.currentPath,this.views)
 
+    this.location = {}
+    this.views = views
+  /*  rr.add([{path:'/',handler:{a:'gui'}}])
+    console.log(rr.recognize('/'))*/
+    Object.keys(this.views).forEach((key)=>{
+    //  console.log(key)
 
-
-    this.origin = 'browser'
-
-
-
-    this.location = {};
-
-
-
-    //this.goTo(location.pathname,'browser')
-  }
-
-
-  getCurrentView (currentPath,views){
-    // console.log(views)
-
-/*
-     for (var key in object){
-
-     }
-/*/ // var x = ()=> <div>not found</div>
-     var res =  Object.keys(views).filter((key)=>{
-         if (views[key].path === currentPath){
-           return true
-         }
-     })
-    //console.log(views[res] || (<div>not found</div>))
-    return views[res] || views.NotFound
-
-  }
-
-  snapShotLocation(){
-    const l = window.location;
-    this.location.hash = l.hash
-    this.location.host = l.host
-    this.location.hostname = l.hostname
-    this.location.href = l.href
-    this.location.origin = l.origin
-    this.location.pathname = l.pathname
-    this.location.port = l.port
-    this.location.protocol = l.protocol
-    this.location.search = l.search
-    this.location.query = queryString.parse(l.search)
-  }
-
-  hookPopStateEventListener(){
-    window.addEventListener('popstate',(ev) => {
-      this.snapShotLocation()
-      this.goTo(location.pathname,'browser')
+      let pathFromView = this.views[key].path
+  //    console.log({path:pathFromView,handler:this.views[key]})
+      rr.add([{path:pathFromView,handler:this.views[key]}])
     });
+
+    this.currentView;
+
+    hookPopStateEventListener.call(this)
+
+    let parsedUrl = new urlParse(startUrl || window.location.href,true)
+    this.goTo(parsedUrl.pathname,parsedUrl.query,startUrl ? '' : 'silent')
+
   }
 
-  goTo(path,origin){
-    this.origin = origin;
-    if (this.currentPath !== path){
-      //console.log(this.views);
-      this.currentPath = path;
-      if (origin !== 'browser'){
-        window.history.pushState(null, null, this.currentPath)
-        this.location.pathname = path
+   goTo = Action('goTo',function (pathname,query,origin){
+
+    let targetUrl =  (isNotEmpty(query)) ? pathname+ '?' +urlParse.qs.stringify(query): pathname
+    let currentUrl =  (isNotEmpty(this.location.query)) ? this.location.pathname + '?' + urlParse.qs.stringify(this.location.query) : this.location.pathname
+
+    if (targetUrl !== currentUrl){
+      this.location = new urlParse(targetUrl,true)
+      changeView.call(this,pathname,query)
+      if (origin !== 'silent'){
+        window.history.pushState(null, null, targetUrl)
       }
     }
-  //  console.log(this.location);
-  }
-
+  })
 
 }
 
@@ -87,7 +91,18 @@ export default RouterStore;
 
 
 
-
+/*  const l = window.location;
+ this.location.hash = l.hash
+ this.location.host = l.host
+ this.location.hostname = l.hostname
+ this.location.href = l.href
+ this.location.origin = l.origin
+ this.location.pathname = l.pathname
+ this.location.port = l.port
+ this.location.protocol = l.protocol
+ this.location.search = l.search
+ this.location.query = urlParse.qs.parse(l.search)
+ console.log(this.location);*/
 
 
 /*

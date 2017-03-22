@@ -9,14 +9,14 @@ export default connect(class Home extends React.Component {
   }
 
   click(){
-    this.props.store.router.goTo('/gui')
-    console.log(this.props.store.router)
-    console.log('click')
+    //setTimeout(()=>{},1000)
+    this.props.store.router.goTo('/app',{gui:'legal'})
+
   }
   render (){
-    console.log(this.props)
+
     return <div>
-      HOME
+      HOME {this.props.store.store1.name}
       <button onClick={this.click}> click</button>
     </div>
   }

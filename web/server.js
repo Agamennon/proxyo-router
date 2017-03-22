@@ -31,6 +31,10 @@ app.use(require("webpack-hot-middleware")(compiler, {
 
 app.use('/', express.static(path.join(__dirname,'/view')));
 
+app.get('*', function(req, res){
+  res.sendFile(__dirname + '/view/index.html');
+});
+
 
 app.listen(4000, () => {
   // devServer();

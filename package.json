@@ -51,6 +51,7 @@
     "proxyo": "file:../proxyo"
   },
   "dependencies": {
-    "query-string": "^4.3.2"
+    "route-recognizer": "^0.2.9",
+    "url-parse": "^1.1.8"
   }
 }

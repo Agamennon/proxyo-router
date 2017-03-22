@@ -15,22 +15,22 @@ const views = {
     component: <Home/>
   }),
   App: new Route({
-    path: '/App',
+    path: '/app',
     component: <App/>,
     onEnter: () => {
-      console.log('entering App!');
+      console.log('entering App haihaia!');
     }
   }),
   App2: new Route({
-    path: '/App2',
+    path: '/app2',
     component: <App2/>,
     onEnter: (route, params, store) => {
       console.log(`entering App2`, params);
     }
   }),
   NotFound: new Route({
-    path:'',
-    component:<div>not found</div>
+    path:'/NotFound',
+    component:<div>not foundeee</div>
   })
 };
 export default views;

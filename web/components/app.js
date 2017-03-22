@@ -5,6 +5,8 @@ import React from 'react'
 import {connect} from 'proxyo'
 
 
+
+
 export default connect(class App extends React.Component {
 
   constructor (){
@@ -14,11 +16,10 @@ export default connect(class App extends React.Component {
 
   click(){
     this.props.store.router.goTo('/gui')
-    console.log(this.props.store.router)
     console.log('click')
   }
   render (){
-    console.log(this.props)
+    //console.log(this.props)
     return <div>
       APP1
       <button onClick={this.click}> click</button>
