@@ -5,9 +5,8 @@ import React from 'react'
 import {connect} from 'proxyo'
 
 
+export default connect(['router','store2'])(class App extends React.Component {
 
-
-export default connect(class App extends React.Component {
 
   constructor (){
     super()
@@ -15,10 +14,11 @@ export default connect(class App extends React.Component {
   }
 
   click(){
-    this.props.store.router.goTo('/gui')
+    this.props.router.goTo('/gui')
     console.log('click')
   }
   render (){
+    console.log('rendering App')
     //console.log(this.props)
     return <div>
       APP1

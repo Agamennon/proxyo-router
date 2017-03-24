@@ -23,11 +23,20 @@ module.exports = [{
               "react"
 
             ],
-            plugins:["transform-class-properties"],
+            plugins:["transform-decorators-legacy","transform-class-properties","transform-object-rest-spread"],
           }
         }],
         exclude: /node_modules/
       }]
+  },
+
+/*  resolve: {
+    symlinks: false
+  },*/
+
+  resolve: {
+    symlinks: false,
+    modules: [path.resolve('node_modules')]
   },
 
   output: {
@@ -35,6 +44,7 @@ module.exports = [{
     path: path.resolve(__dirname, 'dist'),
     publicPath:'/',
   },
+
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
   ]

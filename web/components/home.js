@@ -1,7 +1,9 @@
 import React from 'react'
 import {connect} from 'proxyo'
+import Link from '../../src/components/link'
 
-export default connect(class Home extends React.Component {
+@connect(['router','store1'])
+export default class Home extends React.Component {
 
   constructor (){
     super()
@@ -10,18 +12,19 @@ export default connect(class Home extends React.Component {
 
   click(){
     //setTimeout(()=>{},1000)
-    this.props.store.router.goTo('/app',{gui:'legal'})
+    this.props.router.goTo('/app',{gui:'legal'})
 
   }
   render (){
-
+    console.log('rendering Home')
     return <div>
-      HOME {this.props.store.store1.name}
+      HOME {this.props.store1.name}
+      <Link path="/app2" search={{'a':10}}> app2 </Link>
       <button onClick={this.click}> click</button>
     </div>
   }
 
-})
+}
 
 /*
 

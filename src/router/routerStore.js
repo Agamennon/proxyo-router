@@ -1,7 +1,7 @@
 
 import urlParse from 'url-parse'
 import React from 'react'
-import {observable,Action} from  'proxyo'
+import {observable,action} from  'proxyo'
 import Rr from 'route-recognizer'
 
 
@@ -16,7 +16,7 @@ function isNotEmpty(obj) {
 
 
 function changeView (pathname,query){
-  console.log(pathname)
+
   var res = rr.recognize(pathname);
 
   this.currentView =  res ? res[0].handler : this.views.NotFound
@@ -66,12 +66,30 @@ class RouterStore {
 
     hookPopStateEventListener.call(this)
 
+
     let parsedUrl = new urlParse(startUrl || window.location.href,true)
     this.goTo(parsedUrl.pathname,parsedUrl.query,startUrl ? '' : 'silent')
 
   }
 
-   goTo = Action('goTo',function (pathname,query,origin){
+
+
+/*   @action
+   goTo (pathname,query,origin){
+    console.log('this from goto', this)
+    let targetUrl =  (isNotEmpty(query)) ? pathname+ '?' +urlParse.qs.stringify(query): pathname
+    let currentUrl =  (isNotEmpty(this.location.query)) ? this.location.pathname + '?' + urlParse.qs.stringify(this.location.query) : this.location.pathname
+
+    if (targetUrl !== currentUrl){
+      this.location = new urlParse(targetUrl,true)
+      changeView.call(this,pathname,query)
+      if (origin !== 'silent'){
+        window.history.pushState(null, null, targetUrl)
+      }
+    }
+  }*/
+
+  goTo = action(function(pathname,query,origin){
 
     let targetUrl =  (isNotEmpty(query)) ? pathname+ '?' +urlParse.qs.stringify(query): pathname
     let currentUrl =  (isNotEmpty(this.location.query)) ? this.location.pathname + '?' + urlParse.qs.stringify(this.location.query) : this.location.pathname
@@ -85,77 +103,21 @@ class RouterStore {
     }
   })
 
+/*   goTo = Action('goTo',function (pathname,query,origin){
+    console.log(this)
+    let targetUrl =  (isNotEmpty(query)) ? pathname+ '?' +urlParse.qs.stringify(query): pathname
+    let currentUrl =  (isNotEmpty(this.location.query)) ? this.location.pathname + '?' + urlParse.qs.stringify(this.location.query) : this.location.pathname
+
+    if (targetUrl !== currentUrl){
+      this.location = new urlParse(targetUrl,true)
+      changeView.call(this,pathname,query)
+      if (origin !== 'silent'){
+        window.history.pushState(null, null, targetUrl)
+      }
+    }
+  })*/
+
 }
 
 export default RouterStore;
 
-
-
-/*  const l = window.location;
- this.location.hash = l.hash
- this.location.host = l.host
- this.location.hostname = l.hostname
- this.location.href = l.href
- this.location.origin = l.origin
- this.location.pathname = l.pathname
- this.location.port = l.port
- this.location.protocol = l.protocol
- this.location.search = l.search
- this.location.query = urlParse.qs.parse(l.search)
- console.log(this.location);*/
-
-
-/*
-
-
- class RouterStore {
-
- @observable params = {};
- @observable queryParams = {};
- @observable currentView;
-
- constructor() {
- this.goTo = this.goTo.bind(this);
- }
-
- @action goTo(view, paramsObj, store, queryParamsObj) {
-
- const nextPath = view.replaceUrlParams(paramsObj, queryParamsObj);
- const pathChanged = nextPath !== this.currentPath;
-
- if (!pathChanged) {
- return;
- }
-
- const rootViewChanged = !this.currentView || (this.currentView.rootPath !== view.rootPath);
- const currentParams = toJS(this.params);
- const currentQueryParams = toJS(this.queryParams);
-
- const beforeExitResult = (rootViewChanged && this.currentView && this.currentView.beforeExit) ? this.currentView.beforeExit(this.currentView, currentParams, store, currentQueryParams) : true;
- if (beforeExitResult === false) {
- return;
- }
-
- const beforeEnterResult = (rootViewChanged && view.beforeEnter) ? view.beforeEnter(view, currentParams, store, currentQueryParams) : true
- if (beforeEnterResult === false) {
- return;
- }
-
- rootViewChanged && this.currentView && this.currentView.onExit && this.currentView.onExit(this.currentView, currentParams, store, currentQueryParams);
-
- this.currentView = view;
- this.params = toJS(paramsObj);
- this.queryParams = toJS(queryParamsObj);
- const nextParams = toJS(paramsObj);
- const nextQueryParams = toJS(queryParamsObj);
-
- rootViewChanged && view.onEnter && view.onEnter(view, nextParams, store, nextQueryParams);
- !rootViewChanged && this.currentView && this.currentView.onParamsChange && this.currentView.onParamsChange(this.currentView, nextParams, store, nextQueryParams);
- }
-
- @computed get currentPath() {
- return this.currentView ? this.currentView.replaceUrlParams(this.params, this.queryParams) : '';
- }
- }
-
- export default RouterStore;*/

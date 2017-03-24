@@ -1,4 +1,4 @@
-import queryString from 'query-string';
+
 
 class Route {
 

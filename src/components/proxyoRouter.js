@@ -6,8 +6,8 @@ import Home from '../../web/components/home'
 
 
 
-
-export default connect(class ProxyoRouter extends React.Component {
+@connect(['router'])
+export default class ProxyoRouter extends React.Component {
 
   constructor (){
     super()
@@ -15,27 +15,26 @@ export default connect(class ProxyoRouter extends React.Component {
   }
 
   render (){
-    console.log('render')
+    console.log('rendering proxyo router')
     //console.log(this.props.store.router.currentView)
     //console.log(this.props.store.router.currentView.component)
 
     //console.log({this.props.store.router.currentView.component})
-    var Comp = this.props.store.router.currentView.component.$raw
-    var Comp2 = this.props.store.router.currentView.component
-    console.log(Comp2)
+
+    var Comp = this.props.router.currentView.component.$raw
+
     //console.log (this.props.store.router.currentView.component)
    // console.log (<Home/>)
  //   console.log(this.props.store.router)
     return (<div>
 
         {Comp}
-        search {this.props.store.router.location.query.gui}
+        search {this.props.router.location.query.gui}
         </div>
       )
   }
 
-})
-
+}
 
 
 

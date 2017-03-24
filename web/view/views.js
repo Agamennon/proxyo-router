@@ -18,7 +18,7 @@ const views = {
     path: '/app',
     component: <App/>,
     onEnter: () => {
-      console.log('entering App haihaia!');
+     //  console.log('entering App haihaia!');
     }
   }),
   App2: new Route({
